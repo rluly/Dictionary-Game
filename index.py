@@ -7,6 +7,7 @@ f = open("dictionary.txt","r")
 list = []
 for line in f:
     list.append(line[:-1])
+f.close()
 
 random.seed()
 seed = random.randint(0,999)
@@ -18,8 +19,14 @@ print("Welcome to the Dictionary Game. There is a hidden, common word and you mu
 username = input("Please input a username: ")
 password = input("Please input a password: ")
 
+f2 = open("mysql.txt","r")
+info = []
+for line in f2:
+    info.append(line[:-1])
+f2.close()
+
 try:
-    cnx = mysql.connector.connect(user="rluly", password='barely67', host='localhost', database = 'groomstone')
+    cnx = mysql.connector.connect(user= info[0], password= info[1], host= info[2], database = info[3])
 except mysql.connector.Error as err:
     if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
         print("Connection failed")
