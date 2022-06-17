@@ -25,15 +25,19 @@ for line in f2:
     info.append(line[:-1])
 f2.close()
 
-try:
-    cnx = mysql.connector.connect(user= info[0], password= info[1], host= info[2], database = info[3])
-except mysql.connector.Error as err:
-    if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-        print("Connection failed")
-    elif err.errno == errorcode.ER_BAD_DB_ERROR:
-        print("Database does not exist")
-    else:
-        print("Connection successful")
+cnx = mysql.connector.connect(user= info[0], password= info[1], host= info[2], database = info[3])
+cursor = cnx.cursor()
+err = mysql.connector.Error
+
+if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
+    print("Connection failed")
+elif err.errno == errorcode.ER_BAD_DB_ERROR:
+    print("Database does not exist")
+else:
+    print("Connection successful")
+    add_user = ("INSERT INTO users (username, password, highscore, fastest_time) VALUES (%s,%s,%d,%d)")
+    user_data = (username,password,999999,999999)
+    cursor.execute(add_user,user_data)
 
 while(not win):
     choice = input("Choose a word: ")
