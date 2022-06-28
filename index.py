@@ -1,7 +1,7 @@
 import random
-from datetime import datetime
-import mysql.connector
-from mysql.connector import errorcode
+import datetime
+import pymongo
+import pprint
 
 f = open("dictionary.txt","r")
 list = []
@@ -19,25 +19,22 @@ print("Welcome to the Dictionary Game. There is a hidden, common word and you mu
 username = input("Please input a username: ")
 password = input("Please input a password: ")
 
-f2 = open("mysql.txt","r")
-info = []
-for line in f2:
-    info.append(line[:-1])
-f2.close()
+client = pymongo.MongoClient('mongodb://localhost:27017')
+db = client.test
+db = client['Groomstone']
+users = db.users
+user = users.find_one({"username" : username, "password": password})
 
-cnx = mysql.connector.connect(user= info[0], password= info[1], host= info[2], database = info[3])
-cursor = cnx.cursor()
-err = mysql.connector.Error
-
-if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-    print("Connection failed")
-elif err.errno == errorcode.ER_BAD_DB_ERROR:
-    print("Database does not exist")
+if(user != None):
+    print("good user")
 else:
-    print("Connection successful")
-    add_user = ("INSERT INTO users (username, password, highscore, fastest_time) VALUES (%s,%s,%d,%d)")
-    user_data = (username,password,999999,999999)
-    cursor.execute(add_user,user_data)
+    print("bad user")
+    user = {"username": username, 
+    "password": password,
+    "shortest" : 0,
+    "fastest": 0,
+    "startdate": datetime.datetime.utcnow()}
+    user_id = users.insert_one(user).inserted_id
 
 while(not win):
     choice = input("Choose a word: ")
@@ -49,5 +46,3 @@ while(not win):
         print("The answer is closer to A.")
     else:
         print("The answer is closer to Z.")
-
-cnx.close()
