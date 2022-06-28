@@ -46,8 +46,11 @@ while(not win):
         print("Congratulations you have won!")
         end = time.time()
         final = end-start
-        print(final)
-        print(guesses)
+        print("You got the word in " + guesses + "guesses and it took you " + final + "seconds.")
+        if(guesses < oldshort):
+            users.update_one({'username' : username}, { "$set": { 'shortest': guesses } })
+        if(final < oldfast):
+            users.update_one({'username' : username}, { "$set": { 'fastest': final } })
 
     elif(choice > answer):
         print("The answer is closer to A.")
