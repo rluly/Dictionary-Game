@@ -33,6 +33,10 @@ if(user == None):
     "fastest": 999999,
     "startdate": datetime.datetime.utcnow()}
     user_id = users.insert_one(user).inserted_id
+elif(user != None and user["password"] == password):
+    print("Welcome back " + username + "!")
+else:
+    print("The username exists but the password is incorrect.")
 
 oldshort = user["shortest"]
 oldfast = user["fastest"]
@@ -42,15 +46,16 @@ start = time.time()
 while(not win):
     choice = input("Choose a word: ")
     # print(choice)
-    if(choice == answer):
+    if(choice.lower() == answer):
         print("Congratulations you have won!")
         end = time.time()
         final = end-start
-        print("You got the word in " + guesses + "guesses and it took you " + final + "seconds.")
+        print("You got the word in " + str(guesses) + " guesses and it took you " + str(final) + " seconds.")
         if(guesses < oldshort):
             users.update_one({'username' : username}, { "$set": { 'shortest': guesses } })
         if(final < oldfast):
             users.update_one({'username' : username}, { "$set": { 'fastest': final } })
+        win = 1
 
     elif(choice > answer):
         print("The answer is closer to A.")
