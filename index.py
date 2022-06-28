@@ -50,6 +50,7 @@ while(not win):
         print("Congratulations you have won!")
         end = time.time()
         final = end-start
+        final = round(final)
         print("You got the word in " + str(guesses) + " guesses and it took you " + str(final) + " seconds.")
         if(guesses < oldshort):
             users.update_one({'username' : username}, { "$set": { 'shortest': guesses } })
