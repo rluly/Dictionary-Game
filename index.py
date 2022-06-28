@@ -1,7 +1,7 @@
 import random
 import datetime
 import pymongo
-import pprint
+import time
 
 f = open("dictionary.txt","r")
 list = []
@@ -25,24 +25,33 @@ db = client['Groomstone']
 users = db.users
 user = users.find_one({"username" : username, "password": password})
 
-if(user != None):
-    print("good user")
-else:
-    print("bad user")
+if(user == None):
+    # print("bad user")
     user = {"username": username, 
     "password": password,
-    "shortest" : 0,
-    "fastest": 0,
+    "shortest" : 999999,
+    "fastest": 999999,
     "startdate": datetime.datetime.utcnow()}
     user_id = users.insert_one(user).inserted_id
 
+oldshort = user["shortest"]
+oldfast = user["fastest"]
+guesses = 0
+
+start = time.time()
 while(not win):
     choice = input("Choose a word: ")
     # print(choice)
     if(choice == answer):
         print("Congratulations you have won!")
-        win = 1
+        end = time.time()
+        final = end-start
+        print(final)
+        print(guesses)
+
     elif(choice > answer):
         print("The answer is closer to A.")
+        guesses = guesses + 1
     else:
         print("The answer is closer to Z.")
+        guesses = guesses + 1
