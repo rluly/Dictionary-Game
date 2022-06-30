@@ -6,7 +6,7 @@ import time
 f = open("dictionary.txt","r")
 list = []
 for line in f:
-    list.append(line[:-1])
+    list.append(line.strip())
 f.close()
 
 random.seed()
